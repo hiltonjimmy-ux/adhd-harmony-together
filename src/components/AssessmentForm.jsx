@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
-import { CheckCircle, ClipboardList, AlertCircle } from 'lucide-react';
+import { CheckCircle, ClipboardList, AlertCircle, ArrowRight } from 'lucide-react';
 import { CATEGORIES } from '../constants/assessmentData';
 import { isCategoryComplete, isAssessmentComplete } from '../utils/assessmentUtils';
 
 export const AssessmentForm = ({ partnerNum, scores, updateScore, onComplete }) => {
   const [currentTab, setCurrentTab] = useState(Object.keys(CATEGORIES)[0]);
+  const categoryKeys = Object.keys(CATEGORIES);
+  const currentTabIndex = categoryKeys.indexOf(currentTab);
+  const isLastTab = currentTabIndex === categoryKeys.length - 1;
   const allTabsComplete = isAssessmentComplete(scores, partnerNum);
+
+  const handleNext = () => {
+    if (currentTabIndex < categoryKeys.length - 1) {
+      setCurrentTab(categoryKeys[currentTabIndex + 1]);
+    }
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -64,26 +73,37 @@ export const AssessmentForm = ({ partnerNum, scores, updateScore, onComplete }) 
         ))}
       </div>
 
-      {!allTabsComplete && (
-        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-          <div className="flex items-center gap-2 text-amber-800">
-            <AlertCircle size={18} />
-            <p className="font-medium text-sm">Please complete all tabs before finalizing your ratings.</p>
-          </div>
-        </div>
-      )}
+      {isLastTab ? (
+        <>
+          {!allTabsComplete && (
+            <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+              <div className="flex items-center gap-2 text-amber-800">
+                <AlertCircle size={18} />
+                <p className="font-medium text-sm">Please complete all tabs before finalizing your ratings.</p>
+              </div>
+            </div>
+          )}
 
-      <button
-        onClick={onComplete}
-        disabled={!allTabsComplete}
-        className={`w-full py-4 rounded-xl font-bold transition-colors shadow-lg flex items-center justify-center gap-2 ${
-          allTabsComplete
-            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200 cursor-pointer'
-            : 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-slate-200'
-        }`}
-      >
-        <CheckCircle size={20} /> Finalize My Ratings
-      </button>
+          <button
+            onClick={onComplete}
+            disabled={!allTabsComplete}
+            className={`w-full py-4 rounded-xl font-bold transition-colors shadow-lg flex items-center justify-center gap-2 ${
+              allTabsComplete
+                ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200 cursor-pointer'
+                : 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-slate-200'
+            }`}
+          >
+            <CheckCircle size={20} /> Finalize My Ratings
+          </button>
+        </>
+      ) : (
+        <button
+          onClick={handleNext}
+          className="w-full py-4 rounded-xl font-bold transition-colors shadow-lg flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200 cursor-pointer"
+        >
+          Next <ArrowRight size={20} />
+        </button>
+      )}
     </div>
   );
 };
