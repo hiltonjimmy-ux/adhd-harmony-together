@@ -57,3 +57,8 @@ export const isAssessmentComplete = (scores, partnerNumber) => {
   const allIds = getAllAttributeIds();
   return allIds.every(id => scores[partnerNumber] && scores[partnerNumber][id]);
 };
+
+export const isCategoryComplete = (scores, partnerNumber, category) => {
+  const categoryIds = CATEGORIES[category].map(attr => attr.id);
+  return categoryIds.every(id => scores[partnerNumber] && scores[partnerNumber][id]);
+};

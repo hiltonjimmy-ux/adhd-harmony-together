@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { CheckCircle, ClipboardList } from 'lucide-react';
+import { CheckCircle, ClipboardList, AlertCircle } from 'lucide-react';
 import { CATEGORIES } from '../constants/assessmentData';
+import { isCategoryComplete, isAssessmentComplete } from '../utils/assessmentUtils';
 
 export const AssessmentForm = ({ partnerNum, scores, updateScore, onComplete }) => {
   const [currentTab, setCurrentTab] = useState(Object.keys(CATEGORIES)[0]);
+  const allTabsComplete = isAssessmentComplete(scores, partnerNum);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -15,19 +17,23 @@ export const AssessmentForm = ({ partnerNum, scores, updateScore, onComplete }) 
       </div>
 
       <div className="flex space-x-2 overflow-x-auto pb-2 border-b border-slate-200">
-        {Object.keys(CATEGORIES).map(cat => (
-          <button
-            key={cat}
-            onClick={() => setCurrentTab(cat)}
-            className={`px-4 py-2 rounded-t-lg whitespace-nowrap text-sm font-medium transition-colors ${
-              currentTab === cat
-                ? 'bg-white text-blue-600 border-t border-l border-r border-slate-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]'
-                : 'text-slate-500 hover:text-blue-500'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+        {Object.keys(CATEGORIES).map(cat => {
+          const isComplete = isCategoryComplete(scores, partnerNum, cat);
+          return (
+            <button
+              key={cat}
+              onClick={() => setCurrentTab(cat)}
+              className={`px-4 py-2 rounded-t-lg whitespace-nowrap text-sm font-medium transition-colors flex items-center gap-2 ${
+                currentTab === cat
+                  ? 'bg-white text-blue-600 border-t border-l border-r border-slate-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]'
+                  : 'text-slate-500 hover:text-blue-500'
+              }`}
+            >
+              {cat}
+              {isComplete && <span className="text-emerald-600">✓</span>}
+            </button>
+          );
+        })}
       </div>
 
       <div className="grid gap-6 py-4">
@@ -58,9 +64,23 @@ export const AssessmentForm = ({ partnerNum, scores, updateScore, onComplete }) 
         ))}
       </div>
 
+      {!allTabsComplete && (
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+          <div className="flex items-center gap-2 text-amber-800">
+            <AlertCircle size={18} />
+            <p className="font-medium text-sm">Please complete all tabs before finalizing your ratings.</p>
+          </div>
+        </div>
+      )}
+
       <button
         onClick={onComplete}
-        className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+        disabled={!allTabsComplete}
+        className={`w-full py-4 rounded-xl font-bold transition-colors shadow-lg flex items-center justify-center gap-2 ${
+          allTabsComplete
+            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200 cursor-pointer'
+            : 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-slate-200'
+        }`}
       >
         <CheckCircle size={20} /> Finalize My Ratings
       </button>

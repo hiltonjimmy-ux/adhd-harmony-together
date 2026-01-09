@@ -16,6 +16,7 @@ const App = () => {
     updateScore,
     markComplete,
     revealResults,
+    backToAssessments,
     resetAssessment
   } = useAssessment();
 
@@ -78,7 +79,7 @@ const App = () => {
         ) : (
           <ResultsView
             scores={scores}
-            onBackToAssessment={() => revealResults()}
+            onBackToAssessment={backToAssessments}
           />
         )}
 

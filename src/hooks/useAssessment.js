@@ -138,6 +138,23 @@ export const useAssessment = (assessmentId = null) => {
     }
   }, [currentAssessmentId]);
 
+  const backToAssessments = useCallback(async () => {
+    setResultsRevealed(false);
+
+    if (!currentAssessmentId) return;
+
+    try {
+      const { error: updateError } = await supabase
+        .from('assessments')
+        .update({ results_revealed: false })
+        .eq('id', currentAssessmentId);
+
+      if (updateError) throw updateError;
+    } catch (err) {
+      console.error('Error going back to assessments:', err);
+    }
+  }, [currentAssessmentId]);
+
   const resetAssessment = useCallback(async () => {
     const newId = await createAssessment();
     if (newId) {
@@ -165,6 +182,7 @@ export const useAssessment = (assessmentId = null) => {
     updateScore,
     markComplete,
     revealResults,
+    backToAssessments,
     resetAssessment
   };
 };
