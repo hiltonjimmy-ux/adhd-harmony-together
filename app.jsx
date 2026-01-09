@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { RefreshCcw } from 'lucide-react';
+import { RefreshCcw, LogOut, Loader } from 'lucide-react';
+import { useAuth } from './src/hooks/useAuth';
 import { useAssessment } from './src/hooks/useAssessment';
+import { AuthForm } from './src/components/AuthForm';
 import { ProgressBar } from './src/components/ProgressBar';
 import { AssessmentForm } from './src/components/AssessmentForm';
 import { CompletionView } from './src/components/CompletionView';
@@ -8,6 +10,7 @@ import { ResultsView } from './src/components/ResultsView';
 import { ScaleGuide } from './src/components/ScaleGuide';
 
 const App = () => {
+  const { user, loading: authLoading, error: authError, signIn, signUp, signOut } = useAuth();
   const [activePartner, setActivePartner] = useState(1);
   const {
     scores,
@@ -22,9 +25,35 @@ const App = () => {
 
   const bothCompleted = completed[1] && completed[2];
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader size={48} className="animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthForm onSignIn={signIn} onSignUp={signUp} loading={authLoading} error={authError} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-900">
       <div className="max-w-4xl mx-auto">
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={signOut}
+            className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 transition-colors"
+            title="Logout"
+          >
+            <LogOut size={18} />
+            <span className="text-sm font-medium">Logout</span>
+          </button>
+        </div>
+
         <ProgressBar completed={completed} resultsRevealed={resultsRevealed} />
 
         {!resultsRevealed ? (

@@ -58,9 +58,12 @@ export const useAssessment = (assessmentId = null) => {
       setLoading(true);
       setError(null);
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
       const { data, error: createError } = await supabase
         .from('assessments')
-        .insert([{}])
+        .insert([{ user_id: user.id }])
         .select()
         .single();
 
