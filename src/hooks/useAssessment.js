@@ -40,6 +40,13 @@ export const useAssessment = (assessmentId = null) => {
         if (scoresError) throw scoresError;
 
         const loadedScores = { 1: {}, 2: {} };
+        const allAttrIds = getAllAttributeIds();
+
+        allAttrIds.forEach(id => {
+          loadedScores[1][id] = 1;
+          loadedScores[2][id] = 1;
+        });
+
         scoresData?.forEach(score => {
           loadedScores[score.partner_number][score.attribute_id] = score.score_value;
         });
@@ -68,6 +75,14 @@ export const useAssessment = (assessmentId = null) => {
         .single();
 
       if (createError) throw createError;
+
+      const allAttrIds = getAllAttributeIds();
+      const initialScores = { 1: {}, 2: {} };
+      allAttrIds.forEach(id => {
+        initialScores[1][id] = 1;
+        initialScores[2][id] = 1;
+      });
+      setScores(initialScores);
 
       setCurrentAssessmentId(data.id);
       return data.id;
