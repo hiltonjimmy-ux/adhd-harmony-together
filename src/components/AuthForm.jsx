@@ -37,16 +37,34 @@ export const AuthForm = ({ onSignIn, onSignUp, loading, error }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
-              ADHD Harmony Together
-            </h1>
-            <p className="text-slate-600 text-sm">
-              Relationship Assessment Tool
-            </p>
+      <div className="w-full max-w-5xl">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden lg:flex lg:min-h-[600px]">
+          <div className="lg:w-1/2 relative">
+            <img
+              src="/img_9787.jpeg"
+              alt="Couple"
+              className="w-full h-64 lg:h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-black/40 lg:via-black/10 lg:to-transparent"></div>
+            <div className="absolute bottom-6 left-6 right-6 text-white lg:bottom-12 lg:left-12">
+              <h2 className="text-2xl lg:text-3xl font-bold mb-2">
+                Strengthen Your Connection
+              </h2>
+              <p className="text-sm lg:text-base text-white/90">
+                Navigate ADHD together with understanding and insight
+              </p>
+            </div>
           </div>
+
+          <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
+            <div className="text-center lg:text-left mb-8">
+              <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                ADHD Harmony Together
+              </h1>
+              <p className="text-slate-600 text-sm">
+                Relationship Assessment Tool
+              </p>
+            </div>
 
           <div className="flex gap-2 mb-6">
             <button
@@ -139,18 +157,19 @@ export const AuthForm = ({ onSignIn, onSignUp, loading, error }) => {
             </button>
           </form>
 
-          {!isLogin && (
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <p className="text-xs text-blue-800">
-                After creating your account, you'll be automatically logged in.
-              </p>
-            </div>
-          )}
-        </div>
+            {!isLogin && (
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-xs text-blue-800">
+                  After creating your account, you'll be automatically logged in.
+                </p>
+              </div>
+            )}
 
-        <p className="text-center text-slate-500 text-xs mt-6">
-          Your assessment data is securely stored and private.
-        </p>
+            <p className="text-center lg:text-left text-slate-500 text-xs mt-6">
+              Your assessment data is securely stored and private.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
