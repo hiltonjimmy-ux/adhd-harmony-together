@@ -3,6 +3,7 @@ import { RefreshCcw, LogOut, Loader } from 'lucide-react';
 import { useAuth } from './src/hooks/useAuth';
 import { useAssessment } from './src/hooks/useAssessment';
 import { AuthForm } from './src/components/AuthForm';
+import { PartnerNameForm } from './src/components/PartnerNameForm';
 import { ProgressBar } from './src/components/ProgressBar';
 import { AssessmentForm } from './src/components/AssessmentForm';
 import { CompletionView } from './src/components/CompletionView';
@@ -16,7 +17,10 @@ const App = () => {
     scores,
     completed,
     resultsRevealed,
+    partnerNames,
+    namesSet,
     updateScore,
+    savePartnerNames,
     markComplete,
     revealResults,
     backToAssessments,
@@ -54,33 +58,40 @@ const App = () => {
           </button>
         </div>
 
-        <ProgressBar completed={completed} resultsRevealed={resultsRevealed} />
+        {!namesSet ? (
+          <PartnerNameForm
+            onNamesSet={savePartnerNames}
+            initialNames={partnerNames}
+          />
+        ) : (
+          <>
+            <ProgressBar completed={completed} resultsRevealed={resultsRevealed} />
 
-        {!resultsRevealed ? (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setActivePartner(1)}
-                  className={`px-6 py-2 rounded-full font-bold transition-all ${
-                    activePartner === 1
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-white text-slate-500 shadow-sm border border-slate-200'
-                  }`}
-                >
-                  Partner 1 {completed[1] && '✓'}
-                </button>
-                <button
-                  onClick={() => setActivePartner(2)}
-                  className={`px-6 py-2 rounded-full font-bold transition-all ${
-                    activePartner === 2
-                      ? 'bg-teal-600 text-white shadow-lg'
-                      : 'bg-white text-slate-500 shadow-sm border border-slate-200'
-                  }`}
-                >
-                  Partner 2 {completed[2] && '✓'}
-                </button>
-              </div>
+            {!resultsRevealed ? (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => setActivePartner(1)}
+                      className={`px-6 py-2 rounded-full font-bold transition-all ${
+                        activePartner === 1
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-white text-slate-500 shadow-sm border border-slate-200'
+                      }`}
+                    >
+                      {partnerNames.partner1} {completed[1] && '✓'}
+                    </button>
+                    <button
+                      onClick={() => setActivePartner(2)}
+                      className={`px-6 py-2 rounded-full font-bold transition-all ${
+                        activePartner === 2
+                          ? 'bg-teal-600 text-white shadow-lg'
+                          : 'bg-white text-slate-500 shadow-sm border border-slate-200'
+                      }`}
+                    >
+                      {partnerNames.partner2} {completed[2] && '✓'}
+                    </button>
+                  </div>
               <button
                 onClick={resetAssessment}
                 className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
@@ -90,29 +101,34 @@ const App = () => {
               </button>
             </div>
 
-            {completed[activePartner] ? (
-              <CompletionView
-                partnerNum={activePartner}
-                bothCompleted={bothCompleted}
-                onRevealResults={revealResults}
-              />
+                {completed[activePartner] ? (
+                  <CompletionView
+                    partnerNum={activePartner}
+                    partnerName={partnerNames[`partner${activePartner}`]}
+                    bothCompleted={bothCompleted}
+                    onRevealResults={revealResults}
+                  />
+                ) : (
+                  <AssessmentForm
+                    partnerNum={activePartner}
+                    partnerName={partnerNames[`partner${activePartner}`]}
+                    scores={scores}
+                    updateScore={updateScore}
+                    onComplete={() => markComplete(activePartner)}
+                  />
+                )}
+              </div>
             ) : (
-              <AssessmentForm
-                partnerNum={activePartner}
+              <ResultsView
                 scores={scores}
-                updateScore={updateScore}
-                onComplete={() => markComplete(activePartner)}
+                partnerNames={partnerNames}
+                onBackToAssessment={backToAssessments}
               />
             )}
-          </div>
-        ) : (
-          <ResultsView
-            scores={scores}
-            onBackToAssessment={backToAssessments}
-          />
-        )}
 
-        <ScaleGuide />
+            <ScaleGuide />
+          </>
+        )}
       </div>
     </div>
   );

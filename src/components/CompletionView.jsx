@@ -1,13 +1,13 @@
 import React from 'react';
 import { CheckCircle, Unlock } from 'lucide-react';
 
-export const CompletionView = ({ partnerNum, bothCompleted, onRevealResults }) => {
+export const CompletionView = ({ partnerNum, partnerName, bothCompleted, onRevealResults }) => {
   return (
     <div className="bg-white p-12 rounded-3xl border border-slate-100 shadow-xl text-center space-y-6 animate-in zoom-in-95 duration-500">
       <div className="inline-block p-4 bg-emerald-100 text-emerald-600 rounded-full mb-2">
         <CheckCircle size={48} />
       </div>
-      <h2 className="text-2xl font-bold">Partner {partnerNum} Assessment Complete</h2>
+      <h2 className="text-2xl font-bold">{partnerName}'s Assessment Complete</h2>
       <p className="text-slate-500 max-w-sm mx-auto">
         Your responses are locked. Please hand the device to your partner or wait for them to finish.
       </p>

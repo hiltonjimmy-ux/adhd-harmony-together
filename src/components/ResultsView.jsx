@@ -6,15 +6,18 @@ import { Lightbulb, Users, Download, ChevronLeft } from 'lucide-react';
 import { generateRadarData, generateInsights } from '../utils/assessmentUtils';
 import { InsightCard } from './InsightCard';
 
-export const ResultsView = ({ scores, onBackToAssessment }) => {
+export const ResultsView = ({ scores, partnerNames, onBackToAssessment }) => {
   const radarData = useMemo(() => generateRadarData(scores), [scores]);
   const insights = useMemo(() => generateInsights(scores), [scores]);
+
+  const partner1DisplayName = partnerNames?.partner1 || 'Partner 1';
+  const partner2DisplayName = partnerNames?.partner2 || 'Partner 2';
 
   return (
     <div className="space-y-10 animate-in zoom-in-95 duration-700">
       <div className="text-center">
         <h2 className="text-3xl font-black text-slate-900 mb-2">Relationship Synergy Report</h2>
-        <p className="text-slate-500">A deep-dive analysis of your ADHD dynamics.</p>
+        <p className="text-slate-500">A deep-dive analysis of {partner1DisplayName} and {partner2DisplayName}'s ADHD dynamics.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
@@ -24,8 +27,8 @@ export const ResultsView = ({ scores, onBackToAssessment }) => {
               <PolarGrid stroke="#e2e8f0" />
               <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#64748b' }} />
               <PolarRadiusAxis angle={30} domain={[0, 5]} />
-              <Radar name="Partner 1" dataKey="A" stroke="#2563eb" fill="#2563eb" fillOpacity={0.4} />
-              <Radar name="Partner 2" dataKey="B" stroke="#14b8a6" fill="#14b8a6" fillOpacity={0.4} />
+              <Radar name={partner1DisplayName} dataKey="A" stroke="#2563eb" fill="#2563eb" fillOpacity={0.4} />
+              <Radar name={partner2DisplayName} dataKey="B" stroke="#14b8a6" fill="#14b8a6" fillOpacity={0.4} />
               <Legend />
             </RadarChart>
           </ResponsiveContainer>
@@ -40,7 +43,7 @@ export const ResultsView = ({ scores, onBackToAssessment }) => {
           <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
             <div className="flex justify-between text-xs font-bold text-slate-400 mb-2">
               <span>CATEGORY</span>
-              <span>P1 | P2</span>
+              <span>{partner1DisplayName} | {partner2DisplayName}</span>
             </div>
             {radarData.map(d => (
               <div key={d.subject} className="flex justify-between items-center py-1 border-b border-slate-100 last:border-0">

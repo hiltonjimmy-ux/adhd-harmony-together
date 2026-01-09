@@ -3,7 +3,7 @@ import { CheckCircle, ClipboardList, AlertCircle, ArrowRight } from 'lucide-reac
 import { CATEGORIES } from '../constants/assessmentData';
 import { isCategoryComplete, isAssessmentComplete } from '../utils/assessmentUtils';
 
-export const AssessmentForm = ({ partnerNum, scores, updateScore, onComplete }) => {
+export const AssessmentForm = ({ partnerNum, partnerName, scores, updateScore, onComplete }) => {
   const [currentTab, setCurrentTab] = useState(Object.keys(CATEGORIES)[0]);
   const categoryKeys = Object.keys(CATEGORIES);
   const currentTabIndex = categoryKeys.indexOf(currentTab);
@@ -20,7 +20,7 @@ export const AssessmentForm = ({ partnerNum, scores, updateScore, onComplete }) 
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg mb-6">
         <h3 className="font-bold text-blue-900 flex items-center gap-2">
-          <ClipboardList size={20} /> Partner {partnerNum}'s Assessment
+          <ClipboardList size={20} /> {partnerName}'s Assessment
         </h3>
         <p className="text-sm text-blue-700">Rate honestly. Your partner cannot see these until you both finish.</p>
       </div>

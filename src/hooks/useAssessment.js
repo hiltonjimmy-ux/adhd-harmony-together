@@ -7,6 +7,8 @@ export const useAssessment = (assessmentId = null) => {
   const [scores, setScores] = useState({ 1: {}, 2: {} });
   const [completed, setCompleted] = useState({ 1: false, 2: false });
   const [resultsRevealed, setResultsRevealed] = useState(false);
+  const [partnerNames, setPartnerNames] = useState({ partner1: '', partner2: '' });
+  const [namesSet, setNamesSet] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -31,6 +33,11 @@ export const useAssessment = (assessmentId = null) => {
           2: assessment.partner2_completed
         });
         setResultsRevealed(assessment.results_revealed);
+        setPartnerNames({
+          partner1: assessment.partner1_name || '',
+          partner2: assessment.partner2_name || ''
+        });
+        setNamesSet(!!(assessment.partner1_name && assessment.partner2_name));
 
         const { data: scoresData, error: scoresError } = await supabase
           .from('scores')
@@ -94,6 +101,27 @@ export const useAssessment = (assessmentId = null) => {
       setLoading(false);
     }
   }, []);
+
+  const savePartnerNames = useCallback(async (names) => {
+    setPartnerNames(names);
+    setNamesSet(true);
+
+    if (!currentAssessmentId) return;
+
+    try {
+      const { error: updateError } = await supabase
+        .from('assessments')
+        .update({
+          partner1_name: names.partner1,
+          partner2_name: names.partner2
+        })
+        .eq('id', currentAssessmentId);
+
+      if (updateError) throw updateError;
+    } catch (err) {
+      console.error('Error saving partner names:', err);
+    }
+  }, [currentAssessmentId]);
 
   const updateScore = useCallback(async (partner, attrId, value) => {
     setScores(prev => ({
@@ -195,9 +223,12 @@ export const useAssessment = (assessmentId = null) => {
     scores,
     completed,
     resultsRevealed,
+    partnerNames,
+    namesSet,
     loading,
     error,
     updateScore,
+    savePartnerNames,
     markComplete,
     revealResults,
     backToAssessments,
